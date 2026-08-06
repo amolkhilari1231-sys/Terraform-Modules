@@ -2,12 +2,37 @@ name: Test Workflow
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/**
+  pull_request:
+    branches:
+      - main
+      - develop
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
+   steps:
+      # Checkout Repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - run: echo "GitHub Actions is working"
+      # Setup Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      # Terraform Format
+      - name: Terraform Format
+        run: terraform fmt -check -recursive
+
+      # Terraform Init
+      - name: Terraform Init
+        run: terraform init -backend=false
+
+      # Terraform Validate
+      - name: Terraform Validate
+        run: terraform validate
