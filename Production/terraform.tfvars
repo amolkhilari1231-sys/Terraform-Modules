@@ -11,6 +11,10 @@ rgs = {
     name     = "rg_dev"
     location = "centralindia"
   }
+  rg4 = {
+    name     = "rg_test"
+    location = "centralindia"
+  }
 }
 
 vnets = {
@@ -57,7 +61,7 @@ subnets = {
     name             = "AzureBastionSubnet"
     vnet_name        = "prod_vnet"
     rg_name          = "rg_preprod"
-    address_prefixes = ["10.1.4.0/24"]
+    address_prefixes = ["10.1.5.0/24"]
   }
 
 
