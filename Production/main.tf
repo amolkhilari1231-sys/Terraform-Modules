@@ -20,14 +20,14 @@ module "pip" {
 }
 
 module "vm" {
-  source = "../module/Virtual_machine"
-  vms    = var.vms
+  source     = "../module/Virtual_machine"
+  vms        = var.vms
   depends_on = [module.subnet, module.pip]
 }
 
 module "nat_gateways" {
-  source = "../module/NatGatway"
-  natgw =var.natgw
-  depends_on = [ module.subnet ]
-  
+  source     = "../module/NatGatway"
+  natgw      = var.natgw
+  depends_on = [module.subnet]
+
 }

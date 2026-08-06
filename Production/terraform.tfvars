@@ -3,12 +3,16 @@ rgs = {
     name     = "rg_prod"
     location = "centralindia"
   }
-   rg2 = {
+  rg2 = {
     name     = "rg_preprod"
     location = "centralindia"
   }
-   rg3 = {
+  rg3 = {
     name     = "rg_dev"
+    location = "centralindia"
+  }
+  rg4 = {
+    name     = "rg_test"
     location = "centralindia"
   }
 }
@@ -57,7 +61,7 @@ subnets = {
     name             = "AzureBastionSubnet"
     vnet_name        = "prod_vnet"
     rg_name          = "rg_preprod"
-    address_prefixes = ["10.1.4.0/24"]
+    address_prefixes = ["10.1.5.0/24"]
   }
 
 
@@ -93,15 +97,27 @@ vms = {
     vnet_name      = "prod_vnet"
 
   }
+  vm2 = {
+    nic_name       = "nic1_backend"
+    location       = "centralindia"
+    rg_name        = "rg_prod"
+    vm_name        = "backendvm"
+    size           = "Standard_D4_v5"
+    admin_username = "adminuser"
+    admin_password = "Admin@123"
+    subnet_name    = "backend_subnet"
+    vnet_name      = "prod_vnet"
+
+  }
 }
 
 natgw = {
   natgw1 = {
-  name                    = "frontendnatgateway"
-  location                = "centralindia"
-  resource_group_name     = "rg_prod"
-  sku_name                = "Standard"
-  idle_timeout_in_minutes = 10
-  zones                   = ["1"]
+    name                    = "frontendnatgateway"
+    location                = "centralindia"
+    resource_group_name     = "rg_prod"
+    sku_name                = "Standard"
+    idle_timeout_in_minutes = 10
+    zones                   = ["1"]
   }
 }
