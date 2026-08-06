@@ -1,0 +1,67 @@
+name: Terraform CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/**
+  pull_request:
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+
+jobs:
+  terraform-ci:
+    name: Terraform Validation & Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout Code
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Setup Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      # Terraform Format Check
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
+      # Terraform Init
+      - name: Terraform Init
+        run: terraform init -backend=false
+
+      # Terraform Validate
+      - name: Terraform Validate
+        run: terraform validate
+
+      # Install TFLint
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+
+      # Initialize TFLint
+      - name: Initialize TFLint
+        run: tflint --init
+
+      # Run TFLint
+      - name: Run TFLint
+        run: tflint --recursive
+
+      # Run tfsec
+      - name: Run tfsec
+        uses: aquasecurity/tfsec-action@v1.0.3
+
+      # Run Gitleaks
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Success Message
+      - name: Pipeline Success
+        run: echo "Terraform CI Pipeline Completed Successfully!"
