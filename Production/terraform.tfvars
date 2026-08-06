@@ -97,6 +97,18 @@ vms = {
     vnet_name      = "prod_vnet"
 
   }
+  vm2 = {
+    nic_name       = "nic1_backend"
+    location       = "centralindia"
+    rg_name        = "rg_prod"
+    vm_name        = "backendvm"
+    size           = "Standard_D4_v5"
+    admin_username = "adminuser"
+    admin_password = "Admin@123"
+    subnet_name    = "backend_subnet"
+    vnet_name      = "prod_vnet"
+
+  }
 }
 
 natgw = {
