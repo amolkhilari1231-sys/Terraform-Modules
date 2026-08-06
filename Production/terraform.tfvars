@@ -54,12 +54,7 @@ subnets = {
     rg_name          = "rg_prod"
     address_prefixes = ["10.0.4.0/24"]
   }
-  subnet5 = {
-    name             = "AzureBastionSubnet"
-    vnet_name        = "prod_vnet"
-    rg_name          = "rg_preprod"
-    address_prefixes = ["10.1.5.0/24"]
-  }
+ 
 
 
 
