@@ -1,7 +1,7 @@
 variable "natgw" {}
 
 resource "azurerm_nat_gateway" "natgw" {
-    for_each = var.natgw
+  for_each = var.natgw
 
   name                    = each.value.name
   location                = each.value.location

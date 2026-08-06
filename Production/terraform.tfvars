@@ -3,11 +3,11 @@ rgs = {
     name     = "rg_prod"
     location = "centralindia"
   }
-   rg2 = {
+  rg2 = {
     name     = "rg_preprod"
     location = "centralindia"
   }
-   rg3 = {
+  rg3 = {
     name     = "rg_dev"
     location = "centralindia"
   }
@@ -113,11 +113,11 @@ vms = {
 
 natgw = {
   natgw1 = {
-  name                    = "frontendnatgateway"
-  location                = "centralindia"
-  resource_group_name     = "rg_prod"
-  sku_name                = "Standard"
-  idle_timeout_in_minutes = 10
-  zones                   = ["1"]
+    name                    = "frontendnatgateway"
+    location                = "centralindia"
+    resource_group_name     = "rg_prod"
+    sku_name                = "Standard"
+    idle_timeout_in_minutes = 10
+    zones                   = ["1"]
   }
 }
