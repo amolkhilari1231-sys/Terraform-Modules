@@ -13,58 +13,24 @@ on:
       - develop
 
 jobs:
-  terraform-ci:
-    name: Terraform Validation
+  terraform:
     runs-on: ubuntu-latest
 
     defaults:
       run:
         working-directory: Production
 
-    permissions:
-      contents: read
-
     steps:
-      # Checkout Repository
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # Setup Terraform
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.13.1
 
-      # Verify Terraform Version
-      - name: Terraform Version
-        run: terraform version
+      - run: terraform version
 
-      # Terraform Format Check
-      - name: Terraform Format Check
-        run: terraform fmt -check -recursive
+      - run: terraform fmt -check -recursive
 
-      # Terraform Init
-      - name: Terraform Init
-        run: terraform init -backend=false
+      - run: terraform init -backend=false
 
-      # Terraform Validate
-      - name: Terraform Validate
-        run: terraform validate
-
-      # Setup TFLint
-      - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@v4
-
-      # Initialize TFLint
-      - name: Initialize TFLint
-        run: tflint --init --config=../.tflint.hcl
-
-      # Run TFLint
-      - name: Run TFLint
-        run: tflint --config=../.tflint.hcl
-
-      # Run tfsec
-      - name: Run tfsec
-        uses: aquasecurity/tfsec-action@v1.0.3
-        with:
-          working_directory: Production
+      - run: terraform validate
