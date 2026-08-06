@@ -11,10 +11,7 @@ rgs = {
     name     = "rg_dev"
     location = "centralindia"
   }
-  rg4 = {
-    name     = "rg_test"
-    location = "centralindia"
-  }
+ 
 }
 
 vnets = {
@@ -106,6 +103,18 @@ vms = {
     admin_username = "adminuser"
     admin_password = "Admin@123"
     subnet_name    = "backend_subnet"
+    vnet_name      = "prod_vnet"
+
+  }
+  vm3 = {
+    nic_name       = "nic1_database"
+    location       = "centralindia"
+    rg_name        = "rg_prod"
+    vm_name        = "databasevm"
+    size           = "Standard_D4_v5"
+    admin_username = "adminuser"
+    admin_password = "Admin@123"
+    subnet_name    = "database_subnet"
     vnet_name      = "prod_vnet"
 
   }
