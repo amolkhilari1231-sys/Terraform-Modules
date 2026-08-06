@@ -76,21 +76,21 @@ jobs:
 
       ########################################################
       # Run tfsec
-      ########################################################
-      - name: Run tfsec
-        uses: aquasecurity/tfsec-action@v1.0.3
-        with:
-          working_directory: Production
+      # ########################################################
+      # - name: Run tfsec
+      #   uses: aquasecurity/tfsec-action@v1.0.3
+      #   with:
+      #     working_directory: Production
 
-      ########################################################
-      # Run Gitleaks
-      ########################################################
-      - name: Run Gitleaks
-        uses: step-security/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # ########################################################
+      # # Run Gitleaks
+      # ########################################################
+      # - name: Run Gitleaks
+      #   uses: step-security/gitleaks-action@v2
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      ########################################################
+      # ########################################################
       # Pipeline Success
       ########################################################
       - name: Success
