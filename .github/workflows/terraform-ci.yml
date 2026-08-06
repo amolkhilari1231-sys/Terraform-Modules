@@ -5,7 +5,8 @@ on:
     branches:
       - main
       - develop
-      - feature/**
+      - "feature/**"
+
   pull_request:
     branches:
       - main
@@ -13,11 +14,15 @@ on:
 
 jobs:
   terraform-ci:
+    name: Terraform Validation
     runs-on: ubuntu-latest
 
     defaults:
       run:
         working-directory: Production
+
+    permissions:
+      contents: read
 
     steps:
       # Checkout Repository
@@ -27,9 +32,15 @@ jobs:
       # Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.13.1
 
-      # Terraform Format
-      - name: Terraform Format
+      # Verify Terraform Version
+      - name: Terraform Version
+        run: terraform version
+
+      # Terraform Format Check
+      - name: Terraform Format Check
         run: terraform fmt -check -recursive
 
       # Terraform Init
