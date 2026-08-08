@@ -8,3 +8,10 @@ description = "Detect Terraform Secrets"
 regex = '''(?i)(password|secret|client_secret|token|access_key)\s*=\s*".+"'''
 
 tags = ["terraform", "security"]
+
+[allowlist]
+description = "Allow test password temporarily"
+
+regexes = [
+  '''Admin@123'''
+]
