@@ -2,7 +2,6 @@ title = "Custom Gitleaks Rules"
 
 [[rules]]
 id = "terraform-secrets"
-
 description = "Detect Terraform Secrets"
 
 regex = '''(?i)(password|secret|client_secret|token|access_key)\s*=\s*".+"'''
@@ -10,8 +9,14 @@ regex = '''(?i)(password|secret|client_secret|token|access_key)\s*=\s*".+"'''
 tags = ["terraform", "security"]
 
 [allowlist]
-description = "Allow test password temporarily"
+description = "Temporary test password"
+
+regexTarget = "line"
 
 regexes = [
-  '''Admin@123'''
+  '''admin_password\s*=\s*"Admin@123"'''
+]
+
+paths = [
+  '''^\.git/'''
 ]
