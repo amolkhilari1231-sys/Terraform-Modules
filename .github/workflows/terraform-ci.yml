@@ -3,9 +3,8 @@ name: Terraform CI
 on:
   push:
     branches:
-      - main
-      - develop
-      - "feature/**"
+      
+      - "**"
 
   pull_request:
     branches:
@@ -13,24 +12,59 @@ on:
       - develop
 
 jobs:
-  terraform:
+  terraform-validation:
+    name: Terraform Validation
     runs-on: ubuntu-latest
 
     defaults:
       run:
-        working-directory: Production
+        working-directory: environments/dev
+
+    permissions:
+      contents: read
 
     steps:
-      - uses: actions/checkout@v4
 
-      - uses: hashicorp/setup-terraform@v3
+      # Checkout
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.13.1
+          terraform_version: "1.12.2"
 
-      - run: terraform version
+      - name: Terraform Version
+        run: terraform version
 
-      - run: terraform fmt -check -recursive
+      # Format
+      - name: Terraform Format
+        run: terraform fmt -check -recursive
 
-      - run: terraform init -backend=false
+      # Init
+      - name: Terraform Init
+        run: terraform init -backend=false
 
-      - run: terraform validate
+      # Validate
+      - name: Terraform Validate
+        run: terraform validate
+
+      # TFLint
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+
+      - name: TFLint Init
+        run: tflint --init
+
+      - name: TFLint Scan
+        run: tflint
+
+      # # Install tfsec
+      - name: Install tfsec
+        run: |
+          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+
+      # tfsec Scan
+      - name: tfsec Scan
+        run: tfsec .
