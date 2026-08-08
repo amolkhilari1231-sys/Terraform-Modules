@@ -11,7 +11,7 @@ rgs = {
     name     = "rg_dev"
     location = "centralindia"
   }
- 
+
 }
 
 vnets = {
@@ -106,7 +106,7 @@ vms = {
     vnet_name      = "prod_vnet"
 
   }
-  
+
 }
 
 natgw = {
