@@ -31,3 +31,8 @@ module "nat_gateways" {
   depends_on = [module.subnet]
 
 }
+module "storage_account" {
+  source     = "../module/Storage_account"
+  storage_account = var.storage_account
+  depends_on = [module.resource_group]
+}

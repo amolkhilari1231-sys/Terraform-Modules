@@ -119,3 +119,13 @@ natgw = {
     zones                   = ["1"]
   }
 }
+
+storage_account = {
+  storage_account1 = {
+    name                     = "prodstorageaccount"
+    resource_group_name      = "rg_prod"
+    location                 = "centralindia"
+    account_tier             = "Standard"
+    account_replication_type = "LRS"
+  }
+}

@@ -21,3 +21,6 @@ variable "vms" {
 variable "natgw" {
   type = any
 }
+variable "storage_account" {
+  type = any
+}
