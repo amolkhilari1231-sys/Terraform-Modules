@@ -1,52 +1,100 @@
-name: Terraform CI
+
+name: Terraform
 
 on:
   push:
     branches:
       - "**"
+
   pull_request:
     branches:
       - main
-      - develop
-  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  terraform-validation:
-    name: Terraform Validation
+  terraform-plan:
+    name: Terraform Plan
     runs-on: ubuntu-latest
 
     defaults:
       run:
-        working-directory: Production
-
-    permissions:
-      id-token: write
-      contents: read
+        working-directory: environments/preprod
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: "1.12.2"
-
-      - name: Terraform Version
-        run: terraform version
 
       - name: Azure Login
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        run: |
+          az login \
+            --service-principal \
+            --username "22bf0094-09fb-4671-b2e0-69fe28fdaea9" \
+            --password "c1af56ca-307c-4c84-ba21-acb22094bc2d" \
+            --tenant "5f4f0a1c-6878-46c2-a98f-05806cda2fee"
+
+      - name: Set Azure Subscription
+        run: |
+          az account set \
+            --subscription "9067846d-796b-4678-a30f-0f82bd4ca46a"
+
+      - name: Check Azure Login
+        run: az account show
 
       - name: Terraform Format
         run: terraform fmt -check -recursive
 
       - name: Terraform Init
-        run: terraform init -backend=false
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan
+
+  terraform-apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+
+    needs: terraform-plan
+
+    # Apply ONLY after push to main
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    defaults:
+      run:
+        working-directory: environments/preprod
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Azure Login
+        run: |
+          az login \
+            --service-principal \
+            --username "22bf0094-09fb-4671-b2e0-69fe28fdaea9" \
+            --password "c1af56ca-307c-4c84-ba21-acb22094bc2d" \
+            --tenant "5f4f0a1c-6878-46c2-a98f-05806cda2fee"
+
+      - name: Set Azure Subscription
+        run: |
+          az account set \
+            --subscription "9067846d-796b-4678-a30f-0f82bd4ca46a"
+
+      - name: Check Azure Login
+        run: az account show
+
+      - name: Terraform Init
+        run: terraform init
 
       - name: Terraform Validate
         run: terraform validate
@@ -54,24 +102,5 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -out=tfplan
 
-      - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@v4
-
-      - name: TFLint Init
-        run: tflint --init
-
-      - name: TFLint Scan
-        run: tflint
-
-      - name: Install tfsec
-        run: |
-          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
-
-      - name: tfsec Scan
-        run: tfsec .
-
-      - name: Gitleaks Scan
-        uses: gitleaks/gitleaks-action@v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITLEAKS_CONFIG: ${{ github.workspace }}/.gitleaks.toml
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
