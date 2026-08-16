@@ -22,13 +22,20 @@ jobs:
         working-directory: Production
 
     permissions:
+      id-token: write
       contents: read
 
     steps:
 
+      # =========================
+      # Checkout
+      # =========================
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # =========================
+      # Terraform
+      # =========================
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -37,12 +44,31 @@ jobs:
       - name: Terraform Version
         run: terraform version
 
+      # =========================
+      # Azure Login - OIDC
+      # =========================
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ 22bf0094-09fb-4671-b2e0-69fe28fdaea9 }}
+          tenant-id: ${{ 5f4f0a1c-6878-46c2-a98f-05806cda2fee }}
+          subscription-id: ${{ 9067846d-796b-4678-a30f-0f82bd4ca46a }}
+
+      # =========================
+      # Terraform Format
+      # =========================
       - name: Terraform Format
         run: terraform fmt -check -recursive
 
+      # =========================
+      # Terraform Init
+      # =========================
       - name: Terraform Init
         run: terraform init -backend=false
 
+      # =========================
+      # Terraform Validate
+      # =========================
       - name: Terraform Validate
         run: terraform validate
 
