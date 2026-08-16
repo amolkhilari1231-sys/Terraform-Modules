@@ -1,4 +1,3 @@
-
 name: Terraform
 
 on:
@@ -33,14 +32,14 @@ jobs:
         run: |
           az login \
             --service-principal \
-            --username "22bf0094-09fb-4671-b2e0-69fe28fdaea9" \
-            --password "c1af56ca-307c-4c84-ba21-acb22094bc2d" \
-            --tenant "5f4f0a1c-6878-46c2-a98f-05806cda2fee"
+            --username "${{ secrets.AZURE_CLIENT_ID }}" \
+            --password "${{ secrets.AZURE_CLIENT_SECRET }}" \
+            --tenant "${{ secrets.AZURE_TENANT_ID }}"
 
       - name: Set Azure Subscription
         run: |
           az account set \
-            --subscription "9067846d-796b-4678-a30f-0f82bd4ca46a"
+            --subscription "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
 
       - name: Check Azure Login
         run: az account show
@@ -63,7 +62,6 @@ jobs:
 
     needs: terraform-plan
 
-    # Apply ONLY after push to main
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     defaults:
@@ -81,14 +79,14 @@ jobs:
         run: |
           az login \
             --service-principal \
-            --username "22bf0094-09fb-4671-b2e0-69fe28fdaea9" \
-            --password "c1af56ca-307c-4c84-ba21-acb22094bc2d" \
-            --tenant "5f4f0a1c-6878-46c2-a98f-05806cda2fee"
+            --username "${{ secrets.AZURE_CLIENT_ID }}" \
+            --password "${{ secrets.AZURE_CLIENT_SECRET }}" \
+            --tenant "${{ secrets.AZURE_TENANT_ID }}"
 
       - name: Set Azure Subscription
         run: |
           az account set \
-            --subscription "9067846d-796b-4678-a30f-0f82bd4ca46a"
+            --subscription "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
 
       - name: Check Azure Login
         run: az account show
