@@ -46,6 +46,15 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
+      # =========================
+      # Terraform Plan
+      # =========================
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      # =========================
+      # TFLint
+      # =========================
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v4
 
@@ -55,6 +64,9 @@ jobs:
       - name: TFLint Scan
         run: tflint
 
+      # =========================
+      # tfsec
+      # =========================
       - name: Install tfsec
         run: |
           curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
@@ -70,5 +82,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG: ${{ github.workspace }}/.gitleaks.toml
-
-
