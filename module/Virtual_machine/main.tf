@@ -1,7 +1,8 @@
-variable "vms" {}
-
 data "azurerm_subnet" "subnet" {
-  for_each             = var.vms
+  for_each = {
+    for k, v in var.vms : k => v
+    if lookup(v, "subnet_id", null) == null
+  }
   name                 = each.value.subnet_name
   virtual_network_name = each.value.vnet_name
   resource_group_name  = each.value.rg_name
@@ -15,7 +16,7 @@ resource "azurerm_network_interface" "nic" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = data.azurerm_subnet.subnet[each.key].id
+    subnet_id                     = lookup(each.value, "subnet_id", null) != null ? each.value.subnet_id : data.azurerm_subnet.subnet[each.key].id
     private_ip_address_allocation = "Dynamic"
   }
 }

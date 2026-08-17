@@ -1,9 +1,8 @@
-variable "storage_account" {}
-
 resource "azurerm_storage_account" "storage_account" {
-  name                     = var.storage_account.name
-  resource_group_name      = var.storage_account.resource_group_name
-  location                 = var.storage_account.location
-  account_tier             = var.storage_account.account_tier
-  account_replication_type = var.storage_account.account_replication_type
+  for_each                 = var.storage_account
+  name                     = each.value.name
+  resource_group_name      = each.value.resource_group_name
+  location                 = each.value.location
+  account_tier             = each.value.account_tier
+  account_replication_type = each.value.account_replication_type
 }

@@ -1,4 +1,3 @@
-variable "subnets" {}
 resource "azurerm_subnet" "subnets" {
   for_each             = var.subnets
   name                 = each.value.name

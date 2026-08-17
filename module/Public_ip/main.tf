@@ -1,5 +1,3 @@
-variable "pips" {}
-
 resource "azurerm_public_ip" "pips" {
   for_each            = var.pips
   name                = each.value.name
