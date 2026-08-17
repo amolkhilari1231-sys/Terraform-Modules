@@ -21,6 +21,27 @@ variable "vms" {
 variable "natgw" {
   type = any
 }
+
 variable "storage_account" {
   type = any
+}
+
+variable "app_gateways" {
+  type    = any
+  default = {}
+}
+
+variable "bastions" {
+  type    = any
+  default = {}
+}
+
+variable "nsgs" {
+  type    = any
+  default = {}
+}
+
+variable "peerings" {
+  type    = any
+  default = {}
 }

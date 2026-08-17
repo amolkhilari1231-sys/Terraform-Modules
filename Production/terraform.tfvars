@@ -1,129 +1,234 @@
 rgs = {
-  rg1 = {
-    name     = "rg_prod"
+  rg_hub = {
+    name     = "rg-hub-prod"
     location = "centralindia"
   }
-  rg2 = {
-    name     = "rg_preprod"
+  rg_spoke = {
+    name     = "rg-spoke-prod"
     location = "centralindia"
   }
-  rg3 = {
-    name     = "rg_dev"
-    location = "centralindia"
-  }
-
 }
 
 vnets = {
-  vnet1 = {
-    name                = "prod_vnet"
+  hub_vnet = {
+    name                = "hub-vnet"
     location            = "centralindia"
-    resource_group_name = "rg_prod"
+    resource_group_name = "rg-hub-prod"
     address_space       = ["10.0.0.0/16"]
   }
-  vnet2 = {
-    name                = "prod_vnet"
+  spoke_vnet = {
+    name                = "spoke-vnet"
     location            = "centralindia"
-    resource_group_name = "rg_preprod"
+    resource_group_name = "rg-spoke-prod"
     address_space       = ["10.1.0.0/16"]
   }
 }
+
 subnets = {
-  subnet1 = {
-    name             = "frontend_subnet"
-    vnet_name        = "prod_vnet"
-    rg_name          = "rg_prod"
+  appgw_subnet = {
+    name             = "AppGatewaySubnet"
+    vnet_name        = "hub-vnet"
+    rg_name          = "rg-hub-prod"
     address_prefixes = ["10.0.1.0/24"]
   }
-  subnet2 = {
-    name             = "backend_subnet"
-    vnet_name        = "prod_vnet"
-    rg_name          = "rg_prod"
+  bastion_subnet = {
+    name             = "AzureBastionSubnet"
+    vnet_name        = "hub-vnet"
+    rg_name          = "rg-hub-prod"
     address_prefixes = ["10.0.2.0/24"]
   }
-
-  subnet3 = {
-    name             = "database_subnet"
-    vnet_name        = "prod_vnet"
-    rg_name          = "rg_prod"
-    address_prefixes = ["10.0.3.0/24"]
+  frontend_subnet = {
+    name             = "frontend-subnet"
+    vnet_name        = "spoke-vnet"
+    rg_name          = "rg-spoke-prod"
+    address_prefixes = ["10.1.1.0/24"]
   }
-  subnet4 = {
-    name             = "AzureBastionSubnet"
-    vnet_name        = "prod_vnet"
-    rg_name          = "rg_prod"
-    address_prefixes = ["10.0.4.0/24"]
+  backend_subnet = {
+    name             = "backend-subnet"
+    vnet_name        = "spoke-vnet"
+    rg_name          = "rg-spoke-prod"
+    address_prefixes = ["10.1.2.0/24"]
   }
-  subnet5 = {
-    name             = "AzureBastionSubnet"
-    vnet_name        = "prod_vnet"
-    rg_name          = "rg_preprod"
-    address_prefixes = ["10.1.5.0/24"]
+}
+
+peerings = {
+  hub_to_spoke = {
+    name            = "hub-to-spoke-peering"
+    src_vnet_name   = "hub-vnet"
+    src_rg_name     = "rg-hub-prod"
+    remote_vnet_key = "spoke_vnet"
+    remote_rg_name  = "rg-spoke-prod"
   }
-
-
-
+  spoke_to_hub = {
+    name            = "spoke-to-hub-peering"
+    src_vnet_name   = "spoke-vnet"
+    src_rg_name     = "rg-spoke-prod"
+    remote_vnet_key = "hub_vnet"
+    remote_rg_name  = "rg-hub-prod"
+  }
 }
 
 pips = {
-  pip1 = {
-    name              = "fronend_pip"
-    rg_name           = "rg_prod"
+  appgw_pip = {
+    name              = "pip-appgw"
+    rg_name           = "rg-hub-prod"
     location          = "centralindia"
     allocation_method = "Static"
+    sku               = "Standard"
   }
-  pip2 = {
-    name              = "azurebasion_pip"
-    rg_name           = "rg_prod"
+  bastion_pip = {
+    name              = "pip-bastion"
+    rg_name           = "rg-hub-prod"
     location          = "centralindia"
     allocation_method = "Static"
+    sku               = "Standard"
   }
-
+  natgw_pip = {
+    name              = "pip-natgw"
+    rg_name           = "rg-spoke-prod"
+    location          = "centralindia"
+    allocation_method = "Static"
+    sku               = "Standard"
+  }
 }
 
-vms = {
-  vm1 = {
-    nic_name       = "nic1_frontend"
-    location       = "centralindia"
-    rg_name        = "rg_prod"
-    vm_name        = "frontendvm"
-    size           = "Standard_D4_v5"
-    admin_username = "adminuser"
-    admin_password = "Admin@123"
-    subnet_name    = "frontend_subnet"
-    vnet_name      = "prod_vnet"
-
+app_gateways = {
+  appgw1 = {
+    name                 = "appgw-hub"
+    location             = "centralindia"
+    rg_name              = "rg-hub-prod"
+    vnet_name            = "hub-vnet"
+    subnet_key           = "appgw_subnet"
+    pip_key              = "appgw_pip"
+    backend_ip_addresses = ["10.1.1.4"]
+    backend_port         = 80
   }
-  vm2 = {
-    nic_name       = "nic1_backend"
-    location       = "centralindia"
-    rg_name        = "rg_prod"
-    vm_name        = "backendvm"
-    size           = "Standard_D4_v5"
-    admin_username = "adminuser"
-    admin_password = "Admin@123"
-    subnet_name    = "backend_subnet"
-    vnet_name      = "prod_vnet"
+}
 
+bastions = {
+  bastion1 = {
+    name       = "bastion-hub"
+    location   = "centralindia"
+    rg_name    = "rg-hub-prod"
+    vnet_name  = "hub-vnet"
+    subnet_key = "bastion_subnet"
+    pip_key    = "bastion_pip"
+    sku        = "Standard"
   }
-
 }
 
 natgw = {
   natgw1 = {
-    name                    = "frontendnatgateway"
-    location                = "centralindia"
-    resource_group_name     = "rg_prod"
-    sku_name                = "Standard"
-    idle_timeout_in_minutes = 10
-    zones                   = ["1"]
+    name                = "spoke-natgateway"
+    location            = "centralindia"
+    resource_group_name = "rg-spoke-prod"
+    pip_key             = "natgw_pip"
+    subnet_key          = "frontend_subnet"
+    vnet_name           = "spoke-vnet"
+    sku_name            = "Standard"
+  }
+}
+
+nsgs = {
+  nsg_appgw = {
+    name       = "nsg-appgw"
+    location   = "centralindia"
+    rg_name    = "rg-hub-prod"
+    vnet_name  = "hub-vnet"
+    subnet_key = "appgw_subnet"
+    rules = [
+      {
+        name                       = "allow-http-inbound"
+        priority                   = 100
+        direction                  = "Inbound"
+        access                     = "Allow"
+        protocol                   = "Tcp"
+        destination_port_range     = "80"
+        source_address_prefix      = "Internet"
+        destination_address_prefix = "*"
+      },
+      {
+        name                       = "allow-https-inbound"
+        priority                   = 110
+        direction                  = "Inbound"
+        access                     = "Allow"
+        protocol                   = "Tcp"
+        destination_port_range     = "443"
+        source_address_prefix      = "Internet"
+        destination_address_prefix = "*"
+      },
+      {
+        name                       = "allow-gateway-manager"
+        priority                   = 120
+        direction                  = "Inbound"
+        access                     = "Allow"
+        protocol                   = "Tcp"
+        destination_port_range     = "65200-65535"
+        source_address_prefix      = "GatewayManager"
+        destination_address_prefix = "*"
+      }
+    ]
+  }
+
+  nsg_spoke_frontend = {
+    name       = "nsg-spoke-frontend"
+    location   = "centralindia"
+    rg_name    = "rg-spoke-prod"
+    vnet_name  = "spoke-vnet"
+    subnet_key = "frontend_subnet"
+    rules = [
+      {
+        name                       = "allow-appgw-inbound"
+        priority                   = 100
+        direction                  = "Inbound"
+        access                     = "Allow"
+        protocol                   = "Tcp"
+        destination_port_range     = "80"
+        source_address_prefix      = "10.0.1.0/24"
+        destination_address_prefix = "*"
+      },
+      {
+        name                       = "allow-bastion-ssh"
+        priority                   = 110
+        direction                  = "Inbound"
+        access                     = "Allow"
+        protocol                   = "Tcp"
+        destination_port_range     = "22"
+        source_address_prefix      = "10.0.2.0/24"
+        destination_address_prefix = "*"
+      },
+      {
+        name                       = "deny-direct-internet"
+        priority                   = 200
+        direction                  = "Inbound"
+        access                     = "Deny"
+        protocol                   = "*"
+        destination_port_range     = "*"
+        source_address_prefix      = "Internet"
+        destination_address_prefix = "*"
+      }
+    ]
+  }
+}
+
+vms = {
+  vm1 = {
+    nic_name       = "nic-spoke-web"
+    location       = "centralindia"
+    rg_name        = "rg-spoke-prod"
+    vm_name        = "spoke-web-vm"
+    size           = "Standard_B2als_v2"
+    admin_username = "azureuser"
+    admin_password = "Password1234!"
+    subnet_key     = "frontend_subnet"
+    vnet_name      = "spoke-vnet"
   }
 }
 
 storage_account = {
   storage_account1 = {
-    name                     = "prodstorageaccount"
-    resource_group_name      = "rg_prod"
+    name                     = "spokedstore12345"
+    resource_group_name      = "rg-spoke-prod"
     location                 = "centralindia"
     account_tier             = "Standard"
     account_replication_type = "LRS"

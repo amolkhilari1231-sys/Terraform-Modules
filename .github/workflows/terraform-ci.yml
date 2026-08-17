@@ -19,7 +19,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: Production
+        working-directory: production
 
     steps:
       - name: Checkout code
