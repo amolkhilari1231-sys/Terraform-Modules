@@ -1,7 +1,7 @@
 data "azurerm_subnet" "subnet" {
   for_each = {
     for k, v in var.vms : k => v
-    if lookup(v, "subnet_id", null) == null
+    if lookup(v, "subnet_name", null) != null && lookup(v, "subnet_key", null) == null && lookup(v, "subnet_id", null) == null
   }
   name                 = each.value.subnet_name
   virtual_network_name = each.value.vnet_name
@@ -16,7 +16,7 @@ resource "azurerm_network_interface" "nic" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = lookup(each.value, "subnet_id", null) != null ? each.value.subnet_id : data.azurerm_subnet.subnet[each.key].id
+    subnet_id                     = lookup(each.value, "subnet_id", null) != null ? each.value.subnet_id : try(data.azurerm_subnet.subnet[each.key].id, null)
     private_ip_address_allocation = "Dynamic"
   }
 }
@@ -46,4 +46,8 @@ resource "azurerm_linux_virtual_machine" "vms" {
     sku       = "22_04-lts"
     version   = "latest"
   }
+
+  custom_data = base64encode(
+    file("${path.module}/cloud-init.yml")
+  )
 }

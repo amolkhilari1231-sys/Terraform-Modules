@@ -1,7 +1,7 @@
 data "azurerm_subnet" "appgw_subnet" {
   for_each = {
     for k, v in var.app_gateways : k => v
-    if lookup(v, "subnet_id", null) == null
+    if lookup(v, "subnet_name", null) != null && lookup(v, "subnet_key", null) == null && lookup(v, "subnet_id", null) == null
   }
   name                 = each.value.subnet_name
   virtual_network_name = each.value.vnet_name
@@ -11,7 +11,7 @@ data "azurerm_subnet" "appgw_subnet" {
 data "azurerm_public_ip" "appgw_pip" {
   for_each = {
     for k, v in var.app_gateways : k => v
-    if lookup(v, "pip_id", null) == null
+    if lookup(v, "pip_name", null) != null && lookup(v, "pip_key", null) == null && lookup(v, "pip_id", null) == null
   }
   name                = each.value.pip_name
   resource_group_name = each.value.rg_name
@@ -32,7 +32,7 @@ resource "azurerm_application_gateway" "appgw" {
 
   gateway_ip_configuration {
     name      = "${each.value.name}-ip-config"
-    subnet_id = lookup(each.value, "subnet_id", null) != null ? each.value.subnet_id : data.azurerm_subnet.appgw_subnet[each.key].id
+    subnet_id = lookup(each.value, "subnet_id", null) != null ? each.value.subnet_id : try(data.azurerm_subnet.appgw_subnet[each.key].id, null)
   }
 
   frontend_port {
@@ -42,7 +42,7 @@ resource "azurerm_application_gateway" "appgw" {
 
   frontend_ip_configuration {
     name                 = "${each.value.name}-frontend-ip"
-    public_ip_address_id = lookup(each.value, "pip_id", null) != null ? each.value.pip_id : data.azurerm_public_ip.appgw_pip[each.key].id
+    public_ip_address_id = lookup(each.value, "pip_id", null) != null ? each.value.pip_id : try(data.azurerm_public_ip.appgw_pip[each.key].id, null)
   }
 
   backend_address_pool {

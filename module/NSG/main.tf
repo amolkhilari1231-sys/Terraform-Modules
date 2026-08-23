@@ -26,7 +26,7 @@ resource "azurerm_network_security_group" "nsg" {
 data "azurerm_subnet" "associated_subnets" {
   for_each = {
     for k, v in var.nsgs : k => v
-    if lookup(v, "subnet_name", null) != null && lookup(v, "subnet_id", null) == null
+    if lookup(v, "subnet_name", null) != null && lookup(v, "subnet_key", null) == null && lookup(v, "subnet_id", null) == null
   }
   name                 = each.value.subnet_name
   virtual_network_name = each.value.vnet_name
@@ -36,8 +36,8 @@ data "azurerm_subnet" "associated_subnets" {
 resource "azurerm_subnet_network_security_group_association" "nsg_assoc" {
   for_each = {
     for k, v in var.nsgs : k => v
-    if lookup(v, "subnet_name", null) != null || lookup(v, "subnet_id", null) != null
+    if lookup(v, "subnet_key", null) != null || lookup(v, "subnet_name", null) != null || lookup(v, "subnet_id", null) != null
   }
-  subnet_id                 = lookup(each.value, "subnet_id", null) != null ? each.value.subnet_id : data.azurerm_subnet.associated_subnets[each.key].id
+  subnet_id                 = lookup(each.value, "subnet_id", null) != null ? each.value.subnet_id : try(data.azurerm_subnet.associated_subnets[each.key].id, null)
   network_security_group_id = azurerm_network_security_group.nsg[each.key].id
 }

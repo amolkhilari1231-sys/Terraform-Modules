@@ -1,0 +1,58 @@
+#cloud-config
+
+package_update: true
+
+packages:
+  - nginx
+  - git
+
+write_files:
+
+  - path: /etc/nginx/sites-available/portfolio
+    permissions: "0644"
+
+    content: |
+      server {
+          listen 80 default_server;
+          listen [::]:80 default_server;
+
+          server_name _;
+
+          root /var/www/portfolio;
+          index index.html;
+
+          location / {
+              try_files $uri $uri/ =404;
+          }
+
+          location /health {
+              default_type text/plain;
+              return 200 "OK\n";
+          }
+      }
+
+runcmd:
+
+  - mkdir -p /var/www/portfolio
+
+  - rm -rf /var/www/portfolio/*
+
+  - git clone https://github.com/amolkhilari1231-sys/portfolio-website.git /tmp/portfolio
+
+  - cp -r /tmp/portfolio/* /var/www/portfolio/
+
+  - rm -rf /tmp/portfolio
+
+  - chown -R www-data:www-data /var/www/portfolio
+
+  - chmod -R 755 /var/www/portfolio
+
+  - rm -f /etc/nginx/sites-enabled/default
+
+  - ln -sf /etc/nginx/sites-available/portfolio /etc/nginx/sites-enabled/portfolio
+
+  - nginx -t
+
+  - systemctl enable nginx
+
+  - systemctl restart nginx
