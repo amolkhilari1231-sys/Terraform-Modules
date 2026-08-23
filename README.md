@@ -9,7 +9,7 @@
 
 This repository contains reusable **Terraform modules** for provisioning and managing Microsoft Azure infrastructure following Infrastructure as Code (IaC) best practices.
 
-The project is designed to provide modular, scalable, and production-ready Azure infrastructure with automated validation using GitHub Actions CI. Modular Terraform configurations help reduce code duplication and improve maintainability. :contentReference[oaicite:0]{index=0}
+The project is designed to provide modular, scalable, and production-ready Azure infrastructure with automated validation using GitHub Actions CI. Modular Terraform configurations help reduce code duplication and improve maintainability.
 
 ---
 
@@ -23,26 +23,34 @@ Terraform-Modules
 │       └── terraform-ci.yml
 │
 ├── Production/
-│   ├── main.tf
-│   ├── provider.tf
-│   ├── variables.tf
-│   └── terraform.tfvars
+│   ├── Dev/
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   ├── provider.tf
+│   │   ├── terraform.tfvars
+│   │   └── variables.tf
+│   └── Prod/
 │
 ├── module/
-│   ├── resource_group/
-│   ├── Virtual_network/
-│   ├── Subnets/
+│   ├── AppGateway/
+│   ├── Bastion/
+│   ├── NSG/
+│   ├── NatGatway/
 │   ├── Public_ip/
-│   ├── NatGateway/
-
-│   └── Virtual_machine/
-
+│   ├── Storage_account/
+│   ├── Subnets/
+│   ├── Virtual_machine/
+│   ├── Virtual_network/
+│   ├── VnetPeering/
+│   └── resource_group/
 │
+├── .gitleaks.toml
 ├── .tflint.hcl
 ├── .gitignore
 └── README.md
 ```
 
+---
 
 # ✨ Features
 
@@ -52,13 +60,15 @@ Terraform-Modules
 - Azure Subnet Module
 - Azure Public IP Module
 - Azure NAT Gateway Module
+- Azure Network Security Group (NSG) Module
+- Azure Application Gateway Module
+- Azure Bastion Host Module
+- Azure Storage Account Module
+- Azure VNet Peering Module
 - Azure Virtual Machine Module
+- Environment-Based Workflow (Dev / Prod)
 - GitHub Actions CI Pipeline
-- Terraform Format Validation
-- Terraform Validate
-- TFLint Integration
-- tfsec Security Scanning
-- Production Ready Folder Structure
+- Terraform Format Validation & Security Scanning (TFLint, tfsec, GitLeaks)
 
 ---
 
@@ -71,7 +81,7 @@ Terraform-Modules
 | GitHub Actions | CI Pipeline |
 | TFLint | Terraform Linting |
 | tfsec | Security Scanning |
-| Git | Version Control |
+| Git / Gitleaks | Version Control & Secret Scanning |
 
 ---
 
@@ -97,16 +107,16 @@ The GitHub Actions workflow automatically performs:
 git clone https://github.com/amolkhilari1231-sys/Terraform-Modules.git
 ```
 
-## Go to Project
+## Go to Project Directory
 
 ```bash
 cd Terraform-Modules
 ```
 
-## Initialize Terraform
+## Initialize & Deploy Environment (e.g. Dev)
 
 ```bash
-cd Production
+cd Production/Dev
 
 terraform init
 ```
@@ -140,36 +150,36 @@ terraform plan
 | Subnets | Creates Azure Subnets |
 | Public IP | Creates Azure Public IP |
 | NAT Gateway | Creates Azure NAT Gateway |
-| Virtual Machine | Creates Azure Linux Virtual Machine |
+| Network Security Group | Configures NSGs and security rules |
+| Application Gateway | Deploys Azure App Gateway |
+| Azure Bastion | Provisions Azure Bastion Host |
+| Storage Account | Configures Azure Storage Account |
+| VNet Peering | Sets up Virtual Network Peering |
+| Virtual Machine | Creates Azure Virtual Machine |
 
 ---
 
 # 📌 Best Practices
 
-- Reusable Modules
-- Parameterized Variables
-- Clean Folder Structure
-- GitHub Actions CI
-- Security Scanning
-- Infrastructure as Code
+- Reusable & Parameterized Modules
+- Environment Separation (Dev / Prod)
+- Clean & Scalable Folder Structure
+- Automated GitHub Actions CI Pipeline
+- Static Code & Security Analysis
 - Version Controlled Infrastructure
 
 ---
 
 # 📈 Future Enhancements
 
-- Azure Key Vault
+- Azure Key Vault Integration
 - Azure Load Balancer
-- Azure Application Gateway
-- Azure Bastion
 - Azure Firewall
-- Azure Storage Account
 - Azure SQL Database
 - Private Endpoints
-- Azure Monitor
-- Terraform Plan Artifact
-- Checkov Integration
-- TruffleHog Secret Scanning
+- Azure Monitor & Log Analytics
+- Automated Terraform Plan Artifacts
+- Checkov & TruffleHog Integration
 
 ---
 
@@ -179,8 +189,7 @@ terraform plan
 
 Azure DevOps Engineer | Terraform | GitHub Actions | Microsoft Azure | Infrastructure as Code
 
-GitHub:
-https://github.com/amolkhilari1231-sys
+GitHub: [amolkhilari1231-sys](https://github.com/amolkhilari1231-sys)
 
 ---
 
