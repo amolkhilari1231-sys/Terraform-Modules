@@ -30,6 +30,11 @@ Terraform-Modules
 │   │   ├── terraform.tfvars
 │   │   └── variables.tf
 │   └── Prod/
+│       ├── main.tf
+│       ├── outputs.tf
+│       ├── provider.tf
+│       ├── terraform.tfvars
+│       └── variables.tf
 │
 ├── module/
 │   ├── AppGateway/
