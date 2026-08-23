@@ -34,14 +34,15 @@ Terraform-Modules
 │   ├── Subnets/
 │   ├── Public_ip/
 │   ├── NatGateway/
+
 │   └── Virtual_machine/
+
 │
 ├── .tflint.hcl
 ├── .gitignore
 └── README.md
 ```
 
----
 
 # ✨ Features
 
