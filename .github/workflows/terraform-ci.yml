@@ -37,4 +37,22 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
+      # TFLint
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+
+      - name: TFLint Init
+        run: tflint --init
+
+      - name: TFLint Scan
+        run: tflint
+
+      # # Install tfsec
+      - name: Install tfsec
+        run: |
+          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+
+      # tfsec Scan
+      - name: tfsec Scan
+        run: tfsec .
         
