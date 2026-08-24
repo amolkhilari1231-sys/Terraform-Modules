@@ -37,7 +37,7 @@ runcmd:
 
   - rm -rf /var/www/portfolio/*
 
-  - git clone https://github.com/amolkhilari1231-sys/portfolio-website.git /tmp/portfolio
+  - git clone https://github.com/amolkhilari1231-sys/Streamflix.git /tmp/portfolio
 
   - cp -r /tmp/portfolio/* /var/www/portfolio/
 

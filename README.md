@@ -124,13 +124,12 @@ cd Terraform-Modules
 cd Production/Dev
 
 terraform init
-```
+
 
 ## Validate Configuration
-
 ```bash
 terraform validate
-```
+
 
 ## Format Code
 
